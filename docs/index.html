@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PixelED Path | Assignment Modifier</</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card-bg: #ffffff;
+      --primary: #1f9f93;
+      --primary-soft: rgba(31, 159, 147, 0.1);
+      --accent: #66b32f;
+      --text-main: #1b1b1f;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --danger: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top left, #e0f7ff 0, #f4f7fb 40%, #f4f7fb 100%);
+      color: var(--text-main);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3.5rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .logo-wrapper {
+      width: 80px;
+      height: 80px;
+      border-radius: 999px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 0.5rem;
+    }
+
+    .logo-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: -0.03em;
+    }
+
+    .title-highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .title-block p {
+      margin: 0.3rem 0 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 32rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 0.25rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.4rem;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.75rem;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 1.35rem;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--border-soft);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .card h2 span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .required-dot {
+      color: var(--danger);
+      margin-left: 0.15rem;
+    }
+
+    input[type="url"] {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      border-radius: 0.8rem;
+      border: 1px solid var(--border-soft);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      background-color: #f9fafb;
+    }
+
+    input[type="url"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(31, 159, 147, 0.2);
+      background-color: #ffffff;
+    }
+
+    .helper-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+
+    .helper-text strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.75rem 0 0.5rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      font-size: 0.8rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip input {
+      display: none;
+    }
+
+    .chip-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--border-soft);
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .chip[data-checked="true"] {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .chip[data-checked="true"] .chip-dot {
+      background: var(--primary);
+      transform: scale(1.1);
+    }
+
+    .subheading {
+      margin-top: 1rem;
+      margin-bottom: 0.15rem;
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .supports-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.4rem 0.9rem;
+      margin-top: 0.35rem;
+    }
+
+    .supports-grid label {
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.86rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .supports-grid input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      border-radius: 0.35rem;
+      border: 1px solid var(--border-soft);
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      position: relative;
+      cursor: pointer;
+      background: #f9fafb;
+    }
+
+    .supports-grid input[type="checkbox"]:checked {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .supports-grid input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 4px;
+      height: 8px;
+      border: solid #ffffff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .button-row {
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.65rem 1.6rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 14px 30px rgba(22, 101, 52, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, filter 0.1s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow: 0 20px 40px rgba(22, 163, 74, 0.35);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(22, 163, 74, 0.4);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-subtext {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--primary);
+      box-shadow: 0 0 0 4px rgba(31, 159, 147, 0.25);
+    }
+
+    .status-text strong {
+      font-weight: 600;
+    }
+
+    .status-text span small {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .status-text code {
+      background: rgba(15, 23, 42, 0.06);
+      padding: 0.08rem 0.25rem;
+      border-radius: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .error {
+      margin-top: 0.7rem;
+      font-size: 0.82rem;
+      color: var(--danger);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.22rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #ecfdf5;
+      color: #166534;
+      font-weight: 600;
+    }
+
+    .badge span {
+      font-size: 1.1rem;
+    }
+
+    .result-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #4b5563;
+    }
+
+    .section {
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px dashed #e5e7eb;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .section h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.95rem;
+    }
+
+    .section p {
+      margin: 0 0 0.25rem;
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+
+    .section ul {
+      margin: 0.25rem 0 0.25rem 1.1rem;
+      padding: 0;
+      font-size: 0.83rem;
+      color: var(--text-main);
+    }
+
+    .section li + li {
+      margin-top: 0.1rem;
+    }
+
+    footer {
+      margin-top: 2.2rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="logo-wrapper">
+        <img src="pixeled-logo.png" alt="PixelED Path LLC logo" />
+      </div>
+      <div class="title-block">
+        <h1>
+          <span class="title-highlight">PixelED Path</span> Assignment Modifier
+        </h1>
+        <p>
+          Turn any Google Doc into a fully accommodated version for ESL, IEP,
+          and 504 students — with just the link.
+        </p>
+        <div class="pill">
+          <span>Auto-supports • Low lift for teachers</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>
+          Input
+          <span>Step 1 of 2 · Paste link &amp; choose supports</span>
+        </h2>
+
+        <form id="modifier-form">
+          <label for="docUrl">
+            Google Doc link
+            <span class="required-dot">*</span>
+          </label>
+          <input
+            type="url"
+            id="docUrl"
+            placeholder="https://docs.google.com/document/d/..."
+            required
+          />
+          <p class="helper-text">
+            Make sure sharing is set to
+            <strong>“Anyone with the link can view”</strong>
+            so PixelED Path can access the assignment.
+          </p>
+
+          <div class="subheading">Student profile</div>
+          <div class="pill-row">
+            <label class="chip" data-chip="profile" data-value="ESL/ELL">
+              <span class="chip-dot"></span>
+              <input
+                type="checkbox"
+                name="profiles"
+                value="ESL/ELL"
+              />
+              ESL / ELL
+            </label>
+
+            <label class="chip" data-chip="profile" data-value="IEP">
+              <span class="chip-dot"></span>
+              <input
+                type="checkbox"
+                name="profiles"
+                value="IEP"
+              />
+              IEP
+            </label>
+
+            <label class="chip" data-chip="profile" data-value="504">
+              <span class="chip-dot"></span>
+              <input
+                type="checkbox"
+                name="profiles"
+                value="504"
+              />
+              504 Plan
+            </label>
+
+            <label class="chip" data-chip="profile" data-value="General support">
+              <span class="chip-dot"></span>
+              <input
+                type="checkbox"
+                name="profiles"
+                value="General support"
+              />
+              General Support
+            </label>
+          </div>
+
+          <div class="subheading">What should we build into the modified version?</div>
+          <div class="supports-grid">
+            <label>
+              <input type="checkbox" name="supports" value="Simplified reading level" checked />
+              Simplified reading level
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Chunked directions" checked />
+              Chunked directions
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Vocabulary &amp; picture support" checked />
+              Vocabulary &amp; picture support
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Sentence frames / starters" />
+              Sentence frames / starters
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Checklists &amp; exemplars" />
+              Checklists &amp; exemplars
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Reduced writing load" />
+              Reduced writing load
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Audio-ready layout" />
+              Audio-ready layout
+            </label>
+            <label>
+              <input type="checkbox" name="supports" value="Bilingual glossaries" />
+              Bilingual glossaries
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button type="submit" id="generateBtn">
+              <span>⚙️</span>
+              <span>Generate Modified Assignment</span>
+            </button>
+            <div class="btn-subtext">
+              No copy/paste. Paste the link, click once, preview the result.
+            </div>
+          </div>
+
+          <div id="error" class="error hidden"></div>
+        </form>
+      </section>
+
+      <section class="card" id="output-card">
+        <div class="result-header">
+          <h2>Preview</h2>
+          <div class="badge" id="status-badge">
+            <span>🟢</span>
+            <span>Waiting for link</span>
+          </div>
+        </div>
+        <div class="result-meta">
+          The modified assignment will appear here. You’ll be able to copy it
+          back into a new Google Doc or auto-create one.
+        </div>
+        <div id="results">
+          <div class="section">
+            <h3>What you’ll get</h3>
+            <p>
+              • Student-friendly directions<br />
+              • Chunked, numbered steps<br />
+              • Visual and vocabulary supports<br />
+              • Sentence frames and checklists aligned to your selected profiles
+            </p>
+          </div>
+        </div>
+        <div class="button-row" style="margin-top: 1.25rem;">
+          <button type="button" id="createDocBtn">
+            <span>📄</span>
+            <span>Create Modified Google Doc</span>
+          </button>
+          <div class="btn-subtext" id="createDocStatus">
+            You’ll get a shareable Google Doc link here (after generating).
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      PixelED Path LLC · Inclusive Education &amp; Trades Software
+    </footer>
+  </div>
+
+  <script>
+    const API_BASE = "https://YOUR-BACKEND-URL-HERE"; // TODO: replace with your deployed backend URL
+
+    // chip toggles
+    document.querySelectorAll(".chip[data-chip='profile']").forEach(function (chip) {
+      const input = chip.querySelector("input[type='checkbox']");
+      function sync() {
+        chip.dataset.checked = input.checked ? "true" : "false";
+      }
+      chip.addEventListener("click", function (e) {
+        if (e.target.tagName.toLowerCase() === "input") return;
+        input.checked = !input.checked;
+        sync();
+      });
+      input.addEventListener("change", sync);
+      sync();
+    });
+
+    const form = document.getElementById("modifier-form");
+    const errorBox = document.getElementById("error");
+    const resultsEl = document.getElementById("results");
+    const statusBadge = document.getElementById("status-badge");
+    const createDocBtn = document.getElementById("createDocBtn");
+    const createDocStatus = document.getElementById("createDocStatus");
+    const generateBtn = document.getElementById("generateBtn");
+
+    let lastAssignmentResult = null;
+    let lastDocUrl = "";
+
+    function setStatusIdle() {
+      statusBadge.innerHTML = "<span>🟢</span><span>Waiting for link</span>";
+    }
+
+    function setStatusWorking() {
+      statusBadge.innerHTML = "<span>⏳</span><span>Generating modified assignment…</span>";
+    }
+
+    function setStatusDone() {
+      statusBadge.innerHTML = "<span>✅</span><span>Preview ready</span>";
+    }
+
+    setStatusIdle();
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      errorBox.classList.add("hidden");
+      errorBox.textContent = "";
+
+      const urlInput = document.getElementById("docUrl");
+      const url = urlInput.value.trim();
+      lastDocUrl = url;
+
+      if (!url) {
+        errorBox.textContent = "Paste a Google Doc link to continue.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
+      if (!url.includes("docs.google.com")) {
+        errorBox.textContent = "This doesn’t look like a Google Docs link.";
+        errorBox.classList.remove("hidden");
+        return;
+      }
+
+      const profiles = Array.from(
+        document.querySelectorAll("input[name='profiles']:checked")
+      ).map((el) => el.value);
+
+      const supports = Array.from(
+        document.querySelectorAll("input[name='supports']:checked")
+      ).map((el) => el.value);
+
+      setStatusWorking();
+      generateBtn.disabled = true;
+      createDocBtn.disabled = true;
+      createDocStatus.textContent = "Generate a modified assignment first.";
+
+      try {
+        const response = await fetch(API_BASE + "/api/modify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ docUrl: url, profiles, supports }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.error || "Something went wrong.");
+        }
+
+        renderResults(data.result, url, profiles, supports);
+        lastAssignmentResult = data.result;
+        createDocStatus.textContent = "Click to create a new Google Doc with this modified assignment.";
+        createDocBtn.disabled = false;
+        setStatusDone();
+      } catch (err) {
+        console.error(err);
+        errorBox.textContent =
+          err.message ||
+          "Could not generate a modified assignment. Check link sharing and try again.";
+        errorBox.classList.remove("hidden");
+        setStatusIdle();
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+
+    createDocBtn.addEventListener("click", async () => {
+      if (!lastAssignmentResult) {
+        createDocStatus.textContent = "Generate a modified assignment first.";
+        return;
+      }
+
+      createDocStatus.textContent = "Creating Google Doc...";
+      createDocBtn.disabled = true;
+
+      try {
+        const response = await fetch(API_BASE + "/api/create-doc", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ assignment: lastAssignmentResult }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.error || "Failed to create doc.");
+        }
+
+        const url = data.url;
+        createDocStatus.innerHTML = 'Done. <a href="' + url + '" target="_blank" rel="noopener noreferrer">Open modified Google Doc</a>';
+      } catch (err) {
+        console.error(err);
+        createDocStatus.textContent =
+          err.message || "Could not create Google Doc. Try again.";
+      } finally {
+        createDocBtn.disabled = false;
+      }
+    });
+
+    function renderResults(result, docUrl, profiles, supports) {
+      const safeUrl = docUrl.length > 60 ? docUrl.slice(0, 57) + "..." : docUrl;
+      const profText = profiles.length ? profiles.join(", ") : "None selected";
+      const suppText = supports.length ? supports.join(", ") : "Default supports";
+      const sections = Array.isArray(result.sections) ? result.sections : [];
+
+      resultsEl.innerHTML = `
+        <div class="tag-row">
+          <div class="tag"><strong>Source:</strong> ${escapeHtml(safeUrl)}</div>
+          <div class="tag"><strong>Profiles:</strong> ${escapeHtml(profText)}</div>
+          <div class="tag"><strong>Supports:</strong> ${escapeHtml(suppText)}</div>
+        </div>
+        ${
+          result.title
+            ? `<div class="section">
+                 <h3>${escapeHtml(result.title)}</h3>
+               </div>`
+            : ""
+        }
+        ${
+          Array.isArray(result.notesForTeacher) && result.notesForTeacher.length
+            ? `<div class="section">
+                 <h3>Notes for Teacher</h3>
+                 <ul>
+                  ${result.notesForTeacher
+                    .map((n) => `<li>${escapeHtml(n)}</li>`)
+                    .join("")}
+                 </ul>
+               </div>`
+            : ""
+        }
+        ${sections
+          .map((section) => {
+            const title = section.title || "Section";
+            const body = Array.isArray(section.body)
+              ? section.body
+              : [String(section.body || "")];
+            return `
+              <div class="section">
+                <h3>${escapeHtml(title)}</h3>
+                ${body
+                  .map((line) => `<p>${escapeHtml(line)}</p>`)
+                  .join("")}
+              </div>
+            `;
+          })
+          .join("")}
+      `;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
